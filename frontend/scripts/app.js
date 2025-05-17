@@ -7,6 +7,7 @@ let tgUserName = tg.initDataUnsafe.user.username;
 function initializeTelegram () {
     console.log("Luni Started");
     if (window.Telegram === undefined) {
+        alert("Telegram WebApp is not available");
         console.error("Telegram WebApp is not available");
         return null;
     }
