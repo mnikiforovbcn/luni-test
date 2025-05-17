@@ -1,5 +1,15 @@
 let username = ""
 let socket = null
+let tg = initializeTelegram();
+let tgUserName = tg.initDataUnsafe.user.username;
+
+let initializeTelegram = () => {
+    if (window.Telegram === undefined) {
+        console.error("Telegram WebApp is not available");
+        return null;
+    }
+    return window.Telegram.WebApp;
+};
 
 async function register() {
     username = document.getElementById("username").value
