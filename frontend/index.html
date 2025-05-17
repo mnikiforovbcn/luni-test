@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Luni</title>
+</head>
+<body>
+    <h1>Luni Chat Application</h1>
+    <p>Welcome to the Luni chat application. Please register or login to start chatting.</p>
+    <img src="{{ url_for('static', filename='luni_1.png') }}" alt="Luni">
+    <div id="register">
+    <h2>Register / Login</h2>
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+        <button onclick="register()">Register</button>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <hr>
+    <div id="chat_container" style="display:none;">
+        <h2>Chat</h2>
+        <div id="chat"></div>
+        <input id="message" placeholder="Type a message">
+        <button onclick="sendMessage()">Send</button>
+        <script src="app.js"></script>
+    </div>
+</body>
+</html>
