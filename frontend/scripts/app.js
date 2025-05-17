@@ -1,8 +1,8 @@
 let username = ""
 let socket = null
 let tg = initializeTelegram();
-let tgUserName = tg.initDataUnsafe.user.username;
 setButtons();
+let tgUserName = tg.initDataUnsafe.user.username;
 
 function initializeTelegram () {
     console.log("Luni Started");
