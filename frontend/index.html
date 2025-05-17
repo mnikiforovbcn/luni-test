@@ -2,12 +2,12 @@
 <html>
 <head>
     <title>Luni</title>
-    <link rel="stylesheet" href="/frontend/style.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Luni Chat Application</h1>
     <p>Welcome to the Luni chat application. Please register or login to start chatting.</p>
-    <img src="/frontend/static/luni_1.png" alt="Luni">
+    <img src="{{ url_for('static', filename='luni_1.png') }}" alt="Luni">
     <div id="register">
     <h2>Register / Login</h2>
         <input id="username" placeholder="Username">
@@ -22,7 +22,7 @@
         <div id="chat"></div>
         <input id="message" placeholder="Type a message">
         <button onclick="sendMessage()">Send</button>
-        <script src="/frontend/app.js"></script>
+        <script src="/scripts/app.js"></script>
     </div>
 </body>
 </html>
