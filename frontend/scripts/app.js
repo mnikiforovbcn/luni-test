@@ -9,7 +9,12 @@ function initializeTelegram () {
         console.error("Telegram WebApp is not available");
         return null;
     }
-    return window.Telegram.WebApp;
+    let tg = window.Telegram.WebApp;
+    let sCloseBtn1 = document.getElementsByClassName("exit-btn")[0];
+    sCloseBtn1.addEventListener("click", () => {
+        tg.close();
+    });
+    return tg
 };
 
 async function register() {
