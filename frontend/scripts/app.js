@@ -2,6 +2,7 @@ let username = ""
 let socket = null
 let tg = initializeTelegram();
 let tgUserName = tg.initDataUnsafe.user.username;
+setButtons();
 
 function initializeTelegram () {
     console.log("Luni Started");
@@ -9,13 +10,17 @@ function initializeTelegram () {
         console.error("Telegram WebApp is not available");
         return null;
     }
-    let tg = window.Telegram.WebApp;
+    let telegtam = window.Telegram.WebApp;
+    return telegtam
+};
+
+function setButtons() {
+    console.log("Setup Buttons");
     let sCloseBtn1 = document.getElementsByClassName("exit-btn")[0];
     sCloseBtn1.addEventListener("click", () => {
         tg.close();
     });
-    return tg
-};
+}
 
 async function register() {
     username = document.getElementById("username").value
