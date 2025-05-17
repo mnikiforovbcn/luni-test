@@ -1,0 +1,15 @@
+        body {
+            color: var(--tg-theme-text-color);
+            background: var(--tg-theme-bg-color);
+        }
+
+        h1, h2, p {
+             color: var(--tg-theme-text-color);
+        }
+
+        .reply {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--tg-theme-text-color);
+        }
