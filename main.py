@@ -1,3 +1,4 @@
+# This is a simple Flask application that serves a static HTML page and a script file.
 from flask import Flask, render_template, send_from_directory 
 import os 
   
