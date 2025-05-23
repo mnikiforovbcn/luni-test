@@ -1,0 +1,9 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+databases==0.9.0
+SQLAlchemy==2.0.41
+psycopg2-binary==2.9.10
+python-dotenv
+pydantic-settings==2.9.1
+asyncpg==0.30.0
+passlib==1.7.4
