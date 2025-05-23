@@ -1,4 +1,4 @@
-# This is the main entry point for the FastAPI application.
+
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from backend.auth import router as auth_router
