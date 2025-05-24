@@ -1,8 +1,8 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from auth import router as auth_router
-from db import init_db
-from ws import manager
+from backend.auth import router as auth_router
+from backend.db import init_db
+from backend.ws import manager
 import logging
 
 logging.basicConfig(level=logging.INFO)
