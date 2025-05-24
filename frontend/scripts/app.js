@@ -27,7 +27,7 @@ function setButtons() {
 async function register() {
     username = document.getElementById("username").value
     const password = document.getElementById("password").value
-    await fetch("http://localhost:8000/register", {
+    await fetch("https://luni-backend-mkhailluni.amvera.io/register", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, password})
@@ -38,13 +38,13 @@ async function register() {
 async function login() {
     username = document.getElementById("username").value
     const password = document.getElementById("password").value
-    await fetch("http://localhost:8000/login", {
+    await fetch("https://luni-backend-mkhailluni.amvera.io/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, password})
     })
     alert("Logged in!")
-    socket = new WebSocket(`ws://localhost:8000/ws/${username}`)
+    socket = new WebSocket(`ws://luni-backend-mkhailluni.amvera.io/ws/${username}`)
     socket.onmessage = (event) => {
         const chat = document.getElementById("chat")
         chat.innerHTML += `<div>${event.data}</div>`
