@@ -7,15 +7,16 @@
 <body>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
-    <h1>Luni Chat Application</h1>
-    <p>Welcome to the Luni chat application. Please register or login to start chatting.</p>
-    <img src="{{ url_for('static', filename='luni_1.png') }}" alt="Luni">
-    <div id="register">
-    <h2>Register OR Login</h2>
-        <input id="username" placeholder="Username">
-        <input id="password" type="password" placeholder="Password">
-        <button class="btn" onclick="register()">Register</button>
-        <button class="btn" onclick="login()">Login</button>
+    <!-- <img src="{{ url_for('static', filename='luni_1.png') }}" alt="Luni"> -->
+    <div id="register_container">
+    <h1>Привет, я Луни.<br>Расскажи о себе</h1>
+    
+        <input id="username" placeholder="Имя">
+        <input id="age" placeholder="Возраст">
+        <input id="gender" placeholder="Пол">
+        <input id="tgUserId" type="hidden">
+        <input id="tgUserName" type="hidden">
+        <button class="btn" onclick="register()">Создать аккаунт</button>
     </div>
 
     <hr>
@@ -25,7 +26,7 @@
         <input id="message" placeholder="Type a message">
         <button onclick="sendMessage()">Send</button>
     </div>
-    <button class="btn exit-btn">Хватит</button>
+    <!-- <button class="btn exit-btn">Хватит</button> -->
     <script src="/scripts/app.js"></script>
 </body>
 </html>
