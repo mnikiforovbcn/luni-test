@@ -1,13 +1,22 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from datetime import datetime
 from backend.db import users, database
 from passlib.hash import bcrypt
 
 router = APIRouter()
 
 class UserIn(BaseModel):
+    tg_user_id: str
+    username: str | None = None
+    age: int | None = None
+    gender: str | None = None
+    tg_username: str | None = None
+
+class MessageIn(BaseModel):
     username: str
-    password: str
+    message: str
+    tg_user_id: str
 
 @router.post("/register")
 async def register(user: UserIn):
@@ -15,15 +24,60 @@ async def register(user: UserIn):
     existing = await database.fetch_one(query)
     if existing:
         raise HTTPException(status_code=400, detail="Username taken")
-    hashed = bcrypt.hash(user.password)
-    query = users.insert().values(username=user.username, password=hashed)
+    query = users.insert().values(
+        username=user.username,
+        age=user.age,
+        gender=user.gender,
+        tg_user_id=user.tg_user_id,
+        tg_username=user.tg_username
+    )
     await database.execute(query)
     return {"msg": "Registered"}
 
+@router.post("/check_user")
+async def check_user(tg_user_id: str):
+    query = users.select().where(users.c.tg_user_id == tg_user_id)
+    db_user = await database.fetch_one(query)
+    if db_user:
+        return {"exists": True, "username": db_user.username}
+    return {"exists": False}
+
 @router.post("/login")
 async def login(user: UserIn):
-    query = users.select().where(users.c.username == user.username)
+    query = users.select().where(users.c.tg_user_id == user.tg_user_id)
     db_user = await database.fetch_one(query)
-    if not db_user or not bcrypt.verify(user.password, db_user.password):
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-    return {"msg": "Logged in"}
+    if not db_user:
+        raise HTTPException(status_code=400, detail="User not found")
+    
+    # Update user info if any fields were provided
+    update_data = {}
+    if user.username is not None:
+        update_data[users.c.username] = user.username
+    if user.age is not None:
+        update_data[users.c.age] = user.age
+    if user.gender is not None:
+        update_data[users.c.gender] = user.gender
+    if user.tg_username is not None:
+        update_data[users.c.tg_username] = user.tg_username
+    
+    if update_data:
+        update_query = users.update().where(users.c.tg_user_id == user.tg_user_id).values(update_data)
+        await database.execute(update_query)
+    return {"msg": "Logged in", "username": db_user.username}
+
+@router.post("/save_message")
+async def save_message(message: MessageIn):
+    query = users.select().where(users.c.tg_user_id == message.tg_user_id)
+    db_user = await database.fetch_one(query)
+    if not db_user:
+        raise HTTPException(status_code=400, detail="User not found")
+    
+    # Save message to database
+    messages.insert().values(
+        username=message.username,
+        message=message.message,
+        tg_user_id=message.tg_user_id,
+        timestamp=datetime.utcnow()
+    )
+    await database.execute(query)
+    return {"msg": "Message saved"}

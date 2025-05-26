@@ -7,25 +7,53 @@
 <body>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
-    <h1>Luni Chat Application</h1>
-    <p>Welcome to the Luni chat application. Please register or login to start chatting.</p>
-    <img src="{{ url_for('static', filename='luni_1.png') }}" alt="Luni">
-    <div id="register">
-    <h2>Register OR Login</h2>
-        <input id="username" placeholder="Username">
-        <input id="password" type="password" placeholder="Password">
-        <button class="btn" onclick="register()">Register</button>
-        <button class="btn" onclick="login()">Login</button>
+    <!-- <img src="{{ url_for('static', filename='luni_1.png') }}" alt="Luni"> -->
+    <div id="register_container">
+        <h1>Привет, я Луни.<br>Расскажи о себе</h1>
+        
+        <div class="form-item">
+            <input id="username" placeholder="Имя">
+        </div>
+        <div class="form-item">
+            <select id="age" class="age-select">
+                <option value="">Возраст</option>
+                {% for i in range(10, 31) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+                <option value="more">More</option>
+            </select>
+        </div>
+        <div class="form-item">
+            <select id="gender" class="gender-select">
+                <option value="">Пол</option>
+                <option value="М">М</option>
+                <option value="Ж">Ж</option>
+            </select>
+        </div>
+        <input id="tgUserId" type="hidden">
+        <input id="tgUserName" type="hidden">
+        <div class="form-item">
+            <button class="btn" onclick="register()">Создать аккаунт</button>
+        </div>
     </div>
 
-    <hr>
+    <div id="contact_list" style="display: none;">
+        <h2>Contacts</h2>
+        <div id="contacts"></div>
+    </div>
+    
     <div id="chat_container" style="display:none;">
         <h2>Chat</h2>
         <div id="chat"></div>
         <input id="message" placeholder="Type a message">
         <button onclick="sendMessage()">Send</button>
     </div>
-    <button class="btn exit-btn">Хватит</button>
+    <!-- <button class="btn exit-btn">Хватит</button> -->
     <script src="/scripts/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+    </script>
 </body>
 </html>
