@@ -132,11 +132,32 @@ async function login() {
     }
 }
 
-function sendMessage() {
-    const msg = document.getElementById("message").value;
+async function sendMessage() {
+    const msg = document.getElementById("message").value.trim();
+    if (!msg) return; // Don't send empty messages
+
     if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(msg);
-        document.getElementById("message").value = "";
+        try {
+            // Send to WebSocket
+            socket.send(msg);
+            
+            // Save to backend
+            await fetch("https://luni-backend-mkhailluni.amvera.io/save_message", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    username: username,
+                    message: msg,
+                    tgUserId: document.getElementById("tgUserId").value
+                })
+            });
+            
+            // Clear input
+            document.getElementById("message").value = "";
+        } catch (error) {
+            console.error("Error saving message:", error);
+            alert("Failed to save message");
+        }
     } else {
         alert("WebSocket connection is not open");
     }

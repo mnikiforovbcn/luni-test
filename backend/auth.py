@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from datetime import datetime
 from backend.db import users, database
 from passlib.hash import bcrypt
 
@@ -11,6 +12,11 @@ class UserIn(BaseModel):
     age: int | None = None
     gender: str | None = None
     tg_username: str | None = None
+
+class MessageIn(BaseModel):
+    username: str
+    message: str
+    tg_user_id: str
 
 @router.post("/register")
 async def register(user: UserIn):
@@ -58,3 +64,20 @@ async def login(user: UserIn):
         update_query = users.update().where(users.c.tg_user_id == user.tg_user_id).values(update_data)
         await database.execute(update_query)
     return {"msg": "Logged in", "username": db_user.username}
+
+@router.post("/save_message")
+async def save_message(message: MessageIn):
+    query = users.select().where(users.c.tg_user_id == message.tg_user_id)
+    db_user = await database.fetch_one(query)
+    if not db_user:
+        raise HTTPException(status_code=400, detail="User not found")
+    
+    # Save message to database
+    messages.insert().values(
+        username=message.username,
+        message=message.message,
+        tg_user_id=message.tg_user_id,
+        timestamp=datetime.utcnow()
+    )
+    await database.execute(query)
+    return {"msg": "Message saved"}
