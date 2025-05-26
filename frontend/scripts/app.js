@@ -1,7 +1,35 @@
 let username = ""
 let socket = null
 let tg = initializeTelegram();
-setDefaults(tg);
+
+async function initializeApp() {
+    setDefaults(tg);
+    const tgUserId = document.getElementById("tgUserId").value;
+    
+    try {
+        const response = await fetch(`https://luni-backend-mkhailluni.amvera.io/check_user?tg_user_id=${tgUserId}`, {
+            method: "POST"
+        });
+        const data = await response.json();
+        
+        if (data.exists) {
+            // User exists - show contact list
+            username = data.username;
+            document.getElementById("register_container").style.display = "none";
+            document.getElementById("contact_list").style.display = "block";
+            document.getElementById("chat_container").style.display = "block";
+            initializeWebSocket();
+        } else {
+            // User doesn't exist - show registration
+            document.getElementById("register_container").style.display = "block";
+            document.getElementById("contact_list").style.display = "none";
+            document.getElementById("chat_container").style.display = "none";
+        }
+    } catch (error) {
+        console.error("Error checking user:", error);
+        alert("Error checking user status");
+    }
+}
 
 function initializeTelegram () {
     console.log("Luni Started");
@@ -11,8 +39,22 @@ function initializeTelegram () {
         return null;
     }
     let telegtam = window.Telegram.WebApp;
-    return telegtam
+    return telegtam;
 };
+
+function initializeWebSocket() {
+    socket = new WebSocket(`ws://luni-backend-mkhailluni.amvera.io/ws/${username}`);
+    socket.onmessage = (event) => {
+        const chat = document.getElementById("chat");
+        chat.innerHTML += `<div>${event.data}</div>`;
+    };
+    socket.onclose = () => {
+        console.log("WebSocket connection closed");
+    };
+    socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+    };
+}
 
 function setDefaults(tg) {
     console.log("Setup values");
@@ -47,12 +89,9 @@ async function register() {
             const data = await response.json();
             username = formData.username;
             document.getElementById("register_container").style.display = "none";
+            document.getElementById("contact_list").style.display = "block";
             document.getElementById("chat_container").style.display = "block";
-            socket = new WebSocket(`ws://luni-backend-mkhailluni.amvera.io/ws/${username}`);
-            socket.onmessage = (event) => {
-                const chat = document.getElementById("chat");
-                chat.innerHTML += `<div>${event.data}</div>`;
-            };
+            initializeWebSocket();
         } else {
             alert("Registration failed");
         }
@@ -64,26 +103,41 @@ async function register() {
 
 async function login() {
     const formData = {
+        tgUserId: document.getElementById("tgUserId").value,
         username: document.getElementById("username").value,
         age: document.getElementById("age").value,
         gender: document.getElementById("gender").value,
-        tgUserId: document.getElementById("tgUserId").value,
         tgUserName: document.getElementById("tgUserName").value
     };
-    await fetch("https://luni-backend-mkhailluni.amvera.io/login", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(formData)
-    })
-    alert("Logged in!")
-    socket = new WebSocket(`ws://luni-backend-mkhailluni.amvera.io/ws/${username}`)
-    socket.onmessage = (event) => {
-        const chat = document.getElementById("chat")
-        chat.innerHTML += `<div>${event.data}</div>`
+    try {
+        const response = await fetch("https://luni-backend-mkhailluni.amvera.io/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(formData)
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            username = data.username;
+            document.getElementById("register_container").style.display = "none";
+            document.getElementById("contact_list").style.display = "block";
+            document.getElementById("chat_container").style.display = "block";
+            initializeWebSocket();
+        } else {
+            alert("Login failed");
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        alert("An error occurred during login");
     }
 }
 
 function sendMessage() {
-    const msg = document.getElementById("message").value
-    socket.send(msg)
+    const msg = document.getElementById("message").value;
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(msg);
+        document.getElementById("message").value = "";
+    } else {
+        alert("WebSocket connection is not open");
+    }
 }
