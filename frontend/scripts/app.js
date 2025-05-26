@@ -60,8 +60,19 @@ function setDefaults(tg) {
     console.log("Setup values");
     let tgUserName = tg?.initDataUnsafe?.user?.username ?? "";
     let tgUserId = tg?.initDataUnsafe?.user?.id ?? "";
+    let tgUserFirstName = tg?.initDataUnsafe?.user?.first_name ?? "";
+    let tgUserLastName = tg?.initDataUnsafe?.user?.last_name ?? "";
+
     console.log("Username: " + tgUserName);
     console.log("UserId: " + tgUserId);
+    console.log("UserFirstName: " + tgUserFirstName);
+    
+    // Set username as first name + last name
+    const fullName = (tgUserFirstName + " " + tgUserLastName).trim();
+    if (fullName) {
+        document.getElementById("username").value = fullName;
+    }
+    
     document.getElementById("tgUserId").value = tgUserId;
     document.getElementById("tgUserName").value = tgUserName;
     // let sCloseBtn1 = document.getElementsByClassName("exit-btn")[0];

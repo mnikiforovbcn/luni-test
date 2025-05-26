@@ -9,14 +9,32 @@
     
     <!-- <img src="{{ url_for('static', filename='luni_1.png') }}" alt="Luni"> -->
     <div id="register_container">
-    <h1>Привет, я Луни.<br>Расскажи о себе</h1>
-    
-        <input id="username" placeholder="Имя">
-        <input id="age" placeholder="Возраст">
-        <input id="gender" placeholder="Пол">
+        <h1>Привет, я Луни.<br>Расскажи о себе</h1>
+        
+        <div class="form-item">
+            <input id="username" placeholder="Имя">
+        </div>
+        <div class="form-item">
+            <select id="age" class="age-select">
+                <option value="">Возраст</option>
+                {% for i in range(10, 31) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+                <option value="more">More</option>
+            </select>
+        </div>
+        <div class="form-item">
+            <select id="gender" class="gender-select">
+                <option value="">Пол</option>
+                <option value="М">М</option>
+                <option value="Ж">Ж</option>
+            </select>
+        </div>
         <input id="tgUserId" type="hidden">
         <input id="tgUserName" type="hidden">
-        <button class="btn" onclick="register()">Создать аккаунт</button>
+        <div class="form-item">
+            <button class="btn" onclick="register()">Создать аккаунт</button>
+        </div>
     </div>
 
     <div id="contact_list" style="display: none;">

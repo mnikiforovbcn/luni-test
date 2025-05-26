@@ -1,29 +1,63 @@
-        body {
-            color: var(--tg-theme-text-color);
-            background: var(--tg-theme-bg-color);
-        }
+body {
+    color: var(--tg-theme-text-color);
+    background: var(--tg-theme-bg-color);
+}
 
-        h1, h2, p {
-             color: var(--tg-theme-text-color);
-        }
+h1, h2, p {
+    color: var(--tg-theme-text-color);
+}
 
-        .reply {
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--tg-theme-text-color);
-        }
+.reply {
+    margin-top: 20px;
+}
 
-        .btn {
-            border: 0;
-            border-radius: 5px;
-            margin-top: 50px;
-            height: 60px;
-            width: 200px;
-            font-style: 20px;
-            font-weight: 500;
-            cursor: pointer;
-            color: var(--tg-theme-button-text-color);
-            background: var(--tg-theme-button-color);
-        }
+#register_container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
 
+.form-item {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.form-item input,
+.form-item select {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid var(--tg-theme-hint-color);
+    border-radius: 5px;
+    background: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
+    font-size: 16px;
+}
+
+.gender-select,
+.age-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27292.4%27%20height%3D%27292.4%27%3E%3Cpath%20fill%3D%27%23000000%27%20d%3D%27M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2083.4v80c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%20156.3a17.6%2017.6%200%200%200%200-23.3z%27%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px 20px;
+}
+
+.btn {
+    border: 0;
+    border-radius: 5px;
+    margin: 0 auto;
+    height: 60px;
+    width: 200px;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--tg-theme-button-text-color);
+    background: var(--tg-theme-button-color);
+    display: block;
+}
