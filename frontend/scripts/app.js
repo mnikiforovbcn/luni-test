@@ -7,12 +7,18 @@ async function initializeApp() {
     setDefaults(tg);
     const tgUserId = document.getElementById("tgUserId").value;
     
-    // Initialize form validation
+    initializeFormValidation();
+    
+    const userExists = await checkUserExists(tgUserId);
+    
+    updateUI(userExists, data?.username);
+}
+
+function initializeFormValidation() {
     const createAccountBtn = document.getElementById("create_account");
     createAccountBtn.disabled = true;
     createAccountBtn.style.opacity = 0.5;
     
-    // Add event listeners for form fields
     const formFields = [
         document.getElementById("username"),
         document.getElementById("age"),
@@ -25,29 +31,35 @@ async function initializeApp() {
     
     // Initial check
     checkFormValidity();
-    
+}
+
+async function checkUserExists(tgUserId) {
     try {
         const response = await fetch(`${API_BASE_URL}check_user?tg_user_id=${tgUserId}`, {
             method: "POST"
         });
         const data = await response.json();
-        
-        if (data.exists) {
-            // User exists - show contact list
-            username = data.username;
-            document.getElementById("register_container").style.display = "none";
-            document.getElementById("contact_list").style.display = "block";
-            document.getElementById("chat_container").style.display = "block";
-            initializeWebSocket();
-        } else {
-            // User doesn't exist - show registration
-            document.getElementById("register_container").style.display = "block";
-            document.getElementById("contact_list").style.display = "none";
-            document.getElementById("chat_container").style.display = "none";
-        }
+        return data.exists;
     } catch (error) {
         console.error("Error checking user:", error);
         alert("Error checking user status");
+        return false;
+    }
+}
+
+function updateUI(userExists, username = null) {
+    if (userExists) {
+        // User exists - show contact list
+        username = username;
+        document.getElementById("register_container").style.display = "none";
+        document.getElementById("contact_list").style.display = "block";
+        document.getElementById("chat_container").style.display = "block";
+        initializeWebSocket();
+    } else {
+        // User doesn't exist - show registration
+        document.getElementById("register_container").style.display = "block";
+        document.getElementById("contact_list").style.display = "none";
+        document.getElementById("chat_container").style.display = "none";
     }
 }
 
@@ -95,10 +107,6 @@ function setDefaults(tg) {
     
     document.getElementById("tgUserId").value = tgUserId;
     document.getElementById("tgUserName").value = tgUserName;
-    // let sCloseBtn1 = document.getElementsByClassName("exit-btn")[0];
-    // sCloseBtn1.addEventListener("click", () => {
-    //     tg.close();
-    // });
 }
 
 function checkFormValidity() {
