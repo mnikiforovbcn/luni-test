@@ -1,7 +1,40 @@
-const API_BASE_URL = "https://luni-backend-mkhailluni.amvera.io/";
+const API_BASE_URL = "/";
 let username = ""
 let socket = null
-let tg = initializeTelegram();
+let tg = null;
+
+function initializeTelegram() {
+    // Check if we're running in Telegram Web App
+    if (!window.Telegram || !window.Telegram.WebApp) {
+        console.error('Not running in Telegram Web App');
+        return null;
+    }
+
+    tg = window.Telegram.WebApp;
+    
+    // Initialize Telegram Web App
+    tg.ready();
+    
+    // Get Telegram user data
+    const tgUserId = tg.initDataUnsafe.user.id;
+    const tgUsername = tg.initDataUnsafe.user.username;
+    
+    // Set hidden input values
+    document.getElementById("tgUserId").value = tgUserId;
+    document.getElementById("tgUserName").value = tgUsername;
+    
+    return tg;
+}
+
+// Initialize Telegram Web App when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    tg = initializeTelegram();
+    if (tg) {
+        initializeApp();
+    } else {
+        console.error('Failed to initialize Telegram Web App');
+    }
+});
 
 async function initializeApp() {
     setDefaults(tg);
@@ -9,9 +42,8 @@ async function initializeApp() {
     
     initializeFormValidation();
     
-    const userExists = await checkUserExists(tgUserId);
-    
-    updateUI(userExists, data?.username);
+    const response = await checkUserExists(tgUserId);
+    updateUI(response.exists, response.username);
 }
 
 function initializeFormValidation() {
@@ -35,8 +67,15 @@ function initializeFormValidation() {
 
 async function checkUserExists(tgUserId) {
     try {
-        const response = await fetch(`${API_BASE_URL}check_user?tg_user_id=${tgUserId}`, {
-            method: "POST"
+        const response = await fetch(`${API_BASE_URL}api/check_user`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                tg_user_id: tgUserId
+            })
         });
         const data = await response.json();
         return data.exists;
@@ -121,23 +160,35 @@ function checkFormValidity() {
 }
 
 async function register() {
-    const formData = {
-        username: document.getElementById("username").value,
-        age: document.getElementById("age").value,
-        gender: document.getElementById("gender").value,
-        tgUserId: document.getElementById("tgUserId").value,
-        tgUserName: document.getElementById("tgUserName").value
-    };
+    const enteredUsername = document.getElementById("username").value;
+    const age = document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+    const tgUserId = document.getElementById("tgUserId").value;
+    const tgUsername = document.getElementById("tgUserName").value;
+
     try {
-        const response = await fetch(`${API_BASE_URL}register`, {
+        // Convert age to integer if it exists
+        console.log(age);
+        const ageNum = age ? parseInt(age, 10) : null;
+        console.log(ageNum);
+        
+        const response = await fetch(`${API_BASE_URL}api/register`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(formData)
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                tg_user_id: tgUserId,
+                username: enteredUsername,
+                age: ageNum,
+                gender: gender,
+                tg_username: tgUsername
+            })
         });
         
         if (response.ok) {
             const data = await response.json();
-            username = formData.username;
+            username = data.username;
             document.getElementById("register_container").style.display = "none";
             document.getElementById("contact_list").style.display = "block";
             document.getElementById("chat_container").style.display = "block";
