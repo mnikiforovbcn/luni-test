@@ -281,13 +281,13 @@ async function sendMessage() {
             socket.send(msg);
             
             // Save to backend
-            await fetch(`${API_BASE_URL}save_message`, {
+            await fetch(`${API_BASE_URL}/api/save_message`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
-                    username: username,
+                    username: currentUsername,
                     message: msg,
-                    tgUserId: document.getElementById("tgUserId").value
+                    tg_user_id: document.getElementById("tgUserId").value
                 })
             });
             

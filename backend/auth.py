@@ -103,16 +103,8 @@ async def save_message(message: MessageIn):
         """, message.username, message.message, message.tg_user_id, datetime.utcnow())
         
         return {"msg": "Message saved"}
+    except Exception as e:
+        logger.error(f"Error saving message: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to save message: {str(e)}")
     finally:
         await conn.close()
-        raise HTTPException(status_code=400, detail="User not found")
-    
-    # Save message to database
-    messages.insert().values(
-        username=message.username,
-        message=message.message,
-        tg_user_id=message.tg_user_id,
-        timestamp=datetime.utcnow()
-    )
-    await database.execute(query)
-    return {"msg": "Message saved"}

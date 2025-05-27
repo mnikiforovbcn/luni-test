@@ -23,6 +23,16 @@ users = sqlalchemy.Table(
     sqlalchemy.Column("tg_username", sqlalchemy.String, nullable=True)
 )
 
+messages = sqlalchemy.Table(
+    "messages",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, autoincrement=True),
+    sqlalchemy.Column("username", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("message", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("tg_user_id", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("timestamp", sqlalchemy.DateTime, nullable=False)
+)
+
 async_engine = create_async_engine(
     DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://"),
     echo=True
