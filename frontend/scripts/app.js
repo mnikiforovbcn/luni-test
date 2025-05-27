@@ -1,3 +1,4 @@
+const API_BASE_URL = "https://luni-backend-mkhailluni.amvera.io/";
 let username = ""
 let socket = null
 let tg = initializeTelegram();
@@ -26,7 +27,7 @@ async function initializeApp() {
     checkFormValidity();
     
     try {
-        const response = await fetch(`https://luni-backend-mkhailluni.amvera.io/check_user?tg_user_id=${tgUserId}`, {
+        const response = await fetch(`${API_BASE_URL}check_user?tg_user_id=${tgUserId}`, {
             method: "POST"
         });
         const data = await response.json();
@@ -62,7 +63,7 @@ function initializeTelegram () {
 };
 
 function initializeWebSocket() {
-    socket = new WebSocket(`ws://luni-backend-mkhailluni.amvera.io/ws/${username}`);
+    socket = new WebSocket(`ws://${API_BASE_URL.replace("https://", "")}ws/${username}`);
     socket.onmessage = (event) => {
         const chat = document.getElementById("chat");
         chat.innerHTML += `<div>${event.data}</div>`;
@@ -120,7 +121,7 @@ async function register() {
         tgUserName: document.getElementById("tgUserName").value
     };
     try {
-        const response = await fetch("https://luni-backend-mkhailluni.amvera.io/register", {
+        const response = await fetch(`${API_BASE_URL}register`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(formData)
@@ -151,7 +152,7 @@ async function login() {
         tgUserName: document.getElementById("tgUserName").value
     };
     try {
-        const response = await fetch("https://luni-backend-mkhailluni.amvera.io/login", {
+        const response = await fetch(`${API_BASE_URL}login`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(formData)
@@ -183,7 +184,7 @@ async function sendMessage() {
             socket.send(msg);
             
             // Save to backend
-            await fetch("https://luni-backend-mkhailluni.amvera.io/save_message", {
+            await fetch(`${API_BASE_URL}save_message`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
