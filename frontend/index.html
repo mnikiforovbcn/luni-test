@@ -24,9 +24,6 @@
         <div class="form-item">
             <select id="age" class="age-select">
                 <option value="">Возраст</option>
-                {% for i in range(10, 31) %}
-                    <option value="{{ i }}">{{ i }}</option>
-                {% endfor %}
                 <option value="99">Больше 30</option>
             </select>
         </div>
@@ -58,6 +55,15 @@
     <!-- <button class="btn exit-btn">Хватит</button> -->
     <script src="/static/scripts/app.js"></script>
     <script>
+        // Populate age options
+        const ageSelect = document.getElementById('age');
+        for (let i = 10; i <= 30; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            ageSelect.insertBefore(option, ageSelect.lastElementChild);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initializeApp();
         });

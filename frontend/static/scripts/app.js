@@ -82,20 +82,19 @@ async function checkUserExists(tgUserId) {
     } catch (error) {
         console.error("Error checking user:", error);
         alert("Error checking user status");
-        return false;
+        return { exists: false };
     }
 }
 
-function updateUI(userExists, username = null) {
-    if (userExists) {
-        // User exists - show contact list
-        username = username;
+function updateUI(exists, username) {
+    if (exists) {
         document.getElementById("register_container").style.display = "none";
         document.getElementById("contact_list").style.display = "block";
         document.getElementById("chat_container").style.display = "block";
         initializeWebSocket();
+        // Set the global username
+        window.username = username;
     } else {
-        // User doesn't exist - show registration
         document.getElementById("register_container").style.display = "block";
         document.getElementById("contact_list").style.display = "none";
         document.getElementById("chat_container").style.display = "none";
@@ -113,6 +112,25 @@ function initializeTelegram () {
     return telegtam;
 };
 
+async function checkUserExists(tgUserId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}api/check_user`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tg_user_id: tgUserId })
+        });
+        
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error("Failed to check user existence");
+        }
+    } catch (error) {
+        console.error("Error checking user existence:", error);
+        return { exists: false };
+    }
+}
+
 function initializeWebSocket() {
     socket = new WebSocket(`ws://${API_BASE_URL.replace("https://", "")}ws/${username}`);
     socket.onmessage = (event) => {
@@ -129,9 +147,9 @@ function initializeWebSocket() {
 
 function setDefaults(tg) {
     console.log("Setup values");
-    let tgUserName = tg?.initDataUnsafe?.user?.username ?? "Test";
-    let tgUserId = tg?.initDataUnsafe?.user?.id ?? "0";
-    let tgUserFirstName = tg?.initDataUnsafe?.user?.first_name ?? "Test";
+    let tgUserName = tg?.initDataUnsafe?.user?.username ?? "Test1";
+    let tgUserId = tg?.initDataUnsafe?.user?.id ?? "1";
+    let tgUserFirstName = tg?.initDataUnsafe?.user?.first_name ?? "Test1";
     let tgUserLastName = tg?.initDataUnsafe?.user?.last_name ?? "";
 
     console.log("Username: " + tgUserName);
