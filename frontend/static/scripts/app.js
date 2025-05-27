@@ -1,6 +1,6 @@
-const API_BASE_URL = "/";
-let username = ""
-let socket = null
+const API_BASE_URL = "http://localhost:8000";
+let currentUsername = "";
+let socket = null;
 let tg = null;
 
 function initializeTelegram() {
@@ -87,13 +87,20 @@ async function checkUserExists(tgUserId) {
 }
 
 function updateUI(exists, username) {
+    console.log("Updating UI with exists:", exists, "username:", username);
     if (exists) {
+        // Set the global username first
+        currentUsername = username;
+        
+        // Show chat interface
         document.getElementById("register_container").style.display = "none";
         document.getElementById("contact_list").style.display = "block";
         document.getElementById("chat_container").style.display = "block";
-        initializeWebSocket();
-        // Set the global username
-        window.username = username;
+        
+        // Initialize WebSocket after a small delay to ensure the DOM is fully updated
+        setTimeout(() => {
+            initializeWebSocket();
+        }, 100);
     } else {
         document.getElementById("register_container").style.display = "block";
         document.getElementById("contact_list").style.display = "none";
@@ -114,7 +121,7 @@ function initializeTelegram () {
 
 async function checkUserExists(tgUserId) {
     try {
-        const response = await fetch(`${API_BASE_URL}api/check_user`, {
+        const response = await fetch(`${API_BASE_URL}/api/check_user`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tg_user_id: tgUserId })
@@ -132,7 +139,20 @@ async function checkUserExists(tgUserId) {
 }
 
 function initializeWebSocket() {
-    socket = new WebSocket(`ws://${API_BASE_URL.replace("https://", "")}ws/${username}`);
+    console.log("Initializing WebSocket with username:", username);
+    if (!currentUsername) {
+        console.error("Username is not set!");
+        return;
+    }
+    
+    // Construct WebSocket URL
+    const wsUrl = `ws://${window.location.hostname}:8000/ws/${currentUsername}`;
+    console.log("WebSocket URL:", wsUrl);
+    
+    socket = new WebSocket(wsUrl);
+    socket.onopen = () => {
+        console.log("WebSocket connection established");
+    };
     socket.onmessage = (event) => {
         const chat = document.getElementById("chat");
         chat.innerHTML += `<div>${event.data}</div>`;
@@ -190,7 +210,7 @@ async function register() {
         const ageNum = age ? parseInt(age, 10) : null;
         console.log(ageNum);
         
-        const response = await fetch(`${API_BASE_URL}api/register`, {
+        const response = await fetch(`${API_BASE_URL}/api/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -229,7 +249,7 @@ async function login() {
         tgUserName: document.getElementById("tgUserName").value
     };
     try {
-        const response = await fetch(`${API_BASE_URL}login`, {
+        const response = await fetch(`${API_BASE_URL}/login`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(formData)
