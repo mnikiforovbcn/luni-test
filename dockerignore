@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# virtualenv / venv
+env/
+venv/
+
+# Editor files
+.DS_Store
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml

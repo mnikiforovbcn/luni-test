@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: luni-db
+    restart: always
+    environment:
+      POSTGRES_USER: luni
+      POSTGRES_PASSWORD: luni
+      POSTGRES_DB: luni_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U luni"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: luni-backend
+    restart: always
+    ports:
+      - "8080:8000"
+    environment:
+      DATABASE_URL: "postgresql://luni:luni@db:5432/luni_db"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend/data:/app/backend/data 
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: luni-web
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

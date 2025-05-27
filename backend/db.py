@@ -1,12 +1,16 @@
+import os
+import logging
 import databases
 import sqlalchemy
-import logging
 from sqlalchemy.exc import SQLAlchemyError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = "postgresql://luni:luni@luni-db-mkhailluni.db-msk0.amvera.tech:5432/luni_db?sslmode=require"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://luni:luni@db:5432/luni_db"
+)
 
 database = databases.Database(DATABASE_URL)
 metadata = sqlalchemy.MetaData()
