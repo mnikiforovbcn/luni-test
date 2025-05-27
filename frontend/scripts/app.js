@@ -6,6 +6,25 @@ async function initializeApp() {
     setDefaults(tg);
     const tgUserId = document.getElementById("tgUserId").value;
     
+    // Initialize form validation
+    const createAccountBtn = document.getElementById("create_account");
+    createAccountBtn.disabled = true;
+    createAccountBtn.style.opacity = 0.5;
+    
+    // Add event listeners for form fields
+    const formFields = [
+        document.getElementById("username"),
+        document.getElementById("age"),
+        document.getElementById("gender")
+    ];
+    
+    formFields.forEach(field => {
+        field.addEventListener('input', checkFormValidity);
+    });
+    
+    // Initial check
+    checkFormValidity();
+    
     try {
         const response = await fetch(`https://luni-backend-mkhailluni.amvera.io/check_user?tg_user_id=${tgUserId}`, {
             method: "POST"
@@ -58,9 +77,9 @@ function initializeWebSocket() {
 
 function setDefaults(tg) {
     console.log("Setup values");
-    let tgUserName = tg?.initDataUnsafe?.user?.username ?? "";
-    let tgUserId = tg?.initDataUnsafe?.user?.id ?? "";
-    let tgUserFirstName = tg?.initDataUnsafe?.user?.first_name ?? "";
+    let tgUserName = tg?.initDataUnsafe?.user?.username ?? "Test";
+    let tgUserId = tg?.initDataUnsafe?.user?.id ?? "0";
+    let tgUserFirstName = tg?.initDataUnsafe?.user?.first_name ?? "Test";
     let tgUserLastName = tg?.initDataUnsafe?.user?.last_name ?? "";
 
     console.log("Username: " + tgUserName);
@@ -79,6 +98,17 @@ function setDefaults(tg) {
     // sCloseBtn1.addEventListener("click", () => {
     //     tg.close();
     // });
+}
+
+function checkFormValidity() {
+    const username = document.getElementById("username").value.trim();
+    const age = document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+    const createAccountBtn = document.getElementById("create_account");
+    
+    const isValid = username && age && gender;
+    createAccountBtn.disabled = !isValid;
+    createAccountBtn.style.opacity = isValid ? 1 : 0.5;
 }
 
 async function register() {

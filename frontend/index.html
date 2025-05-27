@@ -20,7 +20,7 @@
                 {% for i in range(10, 31) %}
                     <option value="{{ i }}">{{ i }}</option>
                 {% endfor %}
-                <option value="more">More</option>
+                <option value="more">Больше 30</option>
             </select>
         </div>
         <div class="form-item">
@@ -33,7 +33,7 @@
         <input id="tgUserId" type="hidden">
         <input id="tgUserName" type="hidden">
         <div class="form-item">
-            <button class="btn" onclick="register()">Создать аккаунт</button>
+            <button id="create_account" class="btn" onclick="register()">Создать аккаунт</button>
         </div>
     </div>
 
