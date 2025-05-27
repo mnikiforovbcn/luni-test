@@ -1,5 +1,5 @@
 import sqlalchemy
-from backend.db import metadata
+from db import metadata
 
 users = sqlalchemy.Table(
     "users",

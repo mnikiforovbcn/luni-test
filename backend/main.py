@@ -1,9 +1,8 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from backend.auth import router as auth_router
-from backend.db import init_db
-from backend.ws import manager 
-# тест коментарий
+from auth import router as auth_router
+from db import init_db
+from ws import manager 
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -20,14 +19,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-async def startup():
+async def startup_event():
     try:
         await init_db()
         logger.info("Application started successfully")
     except Exception as e:
         logger.error(f"Failed to start application: {e}")
         raise
+
+async def shutdown_event():
+    # Add any shutdown cleanup here if needed
+    pass
+
+@app.router.lifespan_context
+async def lifespan(app: FastAPI):
+    await startup_event()
+    yield
+    await shutdown_event()
 
 @app.get("/")
 async def root():
